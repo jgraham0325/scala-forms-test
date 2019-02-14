@@ -1,0 +1,37 @@
+@(searchQueryResults: Seq[SearchQueryResult], form: Form[SearchQueryForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+  @main("searchQueryResults") {
+
+    <h1>Search Queries</h1>
+
+    <table>
+      <thead>
+        <tr><th>Name</th>
+      </thead>
+      <tbody>
+      @for(sq <- searchQueryResults) {
+        <tr><td>@sq.key</td></tr>
+      <tr><td>@sq.classification</td></tr>
+      }
+      </tbody>
+    </table>
+
+    <hr/>
+
+    @* Global errors are not tied to any particular form field *@
+    @if(form.hasGlobalErrors) {
+      @form.globalErrors.map { error: FormError =>
+        <div>
+          @error.key: @error.message
+        </div>
+      }
+    }
+
+    @helper.form(postUrl) {
+      @helper.CSRF.formField
+
+      @helper.inputText(form("searchKey"))
+
+      <button>Create search query</button>
+    }
+  }
